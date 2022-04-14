@@ -4,7 +4,7 @@
 # Notice
 This library has not yet been completed. There will be updates, frequently or not.
 
-### Installation
+# Installation
 
 - Install Luvit (visit https://luvit.io and follow the instructions to install it);
 - Install Lufadis via the lit package manager (`lit install Reokodoku/Lufadis`);
