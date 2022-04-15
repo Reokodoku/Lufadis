@@ -1,6 +1,6 @@
 return {
 	name = 'Reokodoku/lufadis',
-	version = '0.0.1',
+	version = '0.0.2',
     private = false,
 	homepage = 'https://github.com/Reokodoku/Lufadis',
 	dependencies = {
