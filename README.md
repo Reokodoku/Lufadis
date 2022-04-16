@@ -19,3 +19,6 @@ This library has not yet been completed. There will be updates, frequently or no
 - Install Luvit (visit https://luvit.io and follow the instructions to install it);
 - Install Lufadis via the lit package manager (`lit install Reokodoku/lufadis`);
 - For run your bot, run the luvit command (`luvit example.lua`).
+
+# Examples
+There are examples in the `examples` folder

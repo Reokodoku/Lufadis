@@ -10,9 +10,12 @@ return {
 	GUILD          		= "/guilds/%s",
 	GUILDS         		= "/guilds",
 	GUILD_CHANNELS      = "/guilds/%s/channels",
+	GUILD_WEBHOOKS		= "/guilds/%s/webhooks",
 	USER           		= "/users/%s",
 	ME             		= "/users/@me",
 	ME_CHANNELS    		= "/users/@me/channels",
 	ME_GUILD       		= "/users/@me/guilds/%s",
 	ME_GUILDS      		= "/users/@me/guilds",
+	WEBHOOK				= "/webhooks/%s",
+	WEBHOOK_TOKEN		= "/webhooks/%s/%s",
 }

@@ -29,7 +29,7 @@ function API:request(method, endpoint, body)
 
     local headers = {
         {'User-Agent', self._userAgent},
-        {'Authorization', self._token},
+		{'Authorization', self._token},
         {'Content-Type', "application/json"},
     }
 
@@ -95,14 +95,19 @@ function API:getGuild(guild_id)
 	return self:request("GET", endpoint)
 end
 
-function API:deleteGuild(guild_id)
-	local endpoint = f(endpoints.GUILD, guild_id)
-	return self:request("DELETE", endpoint)
+function API:getGuildsWebhook(guild_id)
+	local endpoint = f(endpoints.GUILD_WEBHOOKS, guild_id)
+	return self:request("GET", endpoint)
 end
 
 function API:getGuildChannels(guild_id)
 	local endpoint = f(endpoints.GUILD_CHANNELS, guild_id)
 	return self:request("GET", endpoint)
+end
+
+function API:deleteGuild(guild_id)
+	local endpoint = f(endpoints.GUILD, guild_id)
+	return self:request("DELETE", endpoint)
 end
 
 return API
