@@ -2,7 +2,7 @@ local lufadis = require("lufadis")
 
 local f = string.format
 
-local webhook = lufadis.Webhook.new("https://discord.com/api/webhooks/964590544045105242/uFBfzFARgPioGr9S_FKFkVUFMzwN_QeGZqgrRXque8k50ZettPUFFUFc1MmmYXYQ67MX")
+local webhook = lufadis.Webhook.new("<your-webhook-url>")
 
 print("-- Properties --")
 
