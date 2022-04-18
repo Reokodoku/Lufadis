@@ -25,4 +25,5 @@ print("-- Methods --")
 print(f("Created at custom: %s", webhook:createdAtCustom("/")))
 print(f("Avatar URL: %s", webhook:avatarURL()))
 
-webhook:send({ content = "It works!" });
+webhook:send({ content = "It works!" })
+print(webhook:fetchMessage("<message-id>").createdAt)

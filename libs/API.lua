@@ -50,6 +50,8 @@ function API:request(method, endpoint, body)
 		print(f('Too many requests, retrying in %i ms', delay))
 		timer.sleep(delay)
 		return self:request(method, endpoint, body)
+	elseif request.code == 204 then -- 204 = No Content (usually there is when the user has deleted a content)
+		return true
 	end
 
 	return json.parse(data)

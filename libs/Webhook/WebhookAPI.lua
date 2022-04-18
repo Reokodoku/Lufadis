@@ -47,6 +47,8 @@ function WebhookAPI:request(method, endpoint, body)
 		print(f('Too many requests, retrying in %i ms', delay))
 		timer.sleep(delay)
 		return self:request(method, endpoint, body)
+	elseif request.code == 204 then -- 204 = No Content (usually there is when the user has deleted a content)
+		return true
 	end
 
 	return json.parse(data)
@@ -54,6 +56,11 @@ end
 
 function WebhookAPI:getWebhook(webhook_id)
 	local endpoint = f(endpoints.WEBHOOK_TOKEN, webhook_id, self._token)
+	return self:request("GET", endpoint)
+end
+
+function WebhookAPI:getWebhookMessage(webhook_id, message_id)
+	local endpoint = f(endpoints.WEBHOOK_TOKEN_MESSAGE, webhook_id, self._token, message_id)
 	return self:request("GET", endpoint)
 end
 

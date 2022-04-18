@@ -1,6 +1,7 @@
 local http = require("coro-http")
 local json = require("json")
 local Snowflake = require("classes/Snowflake")
+local Message = require("classes/Message")
 local getURLs = require("utils/getURLs")
 local WebhookAPI = require("Webhook/WebhookAPI")
 
@@ -51,6 +52,10 @@ end
 
 function Webhook:send(content)
     return api:postWebhook(self.id, content)
+end
+
+function Webhook:fetchMessage(message_id)
+    return Message.new(api:getWebhookMessage(self.id, message_id))
 end
 
 return Webhook
