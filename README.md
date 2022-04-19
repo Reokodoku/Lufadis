@@ -20,5 +20,31 @@ This library has not yet been completed. There will be updates, frequently or no
 - Install Lufadis via the lit package manager (`lit install Reokodoku/lufadis`);
 - For run your bot, run the luvit command (`luvit example.lua`).
 
-# Examples
-There are examples in the `examples` folder
+# Example usage
+
+To get started import Lufadis, create a new class API and authenticate:
+
+```lua
+local lufadis = require("lufadis")
+local API = lufadis.API.new()
+
+API.authenticate("<your-token>")
+```
+
+Now you can call the User class, Message class, Guild class, etc...
+```lua
+
+-- Guild class
+local guild = lufadis.Guild.new(API:getGuild("<guild-id>"))
+print(string.format("Guild's ID: %s", guild.id))
+print(string.format("Guild's name: %s", guild.name))
+print(string.format("Guild's description: %s", guild.description))
+
+-- User class
+local user = lufadis.User.new(API:getUser("<user-id>"))
+print(string.format("User's ID: %s", user.id))
+print(string.format("User's username: %s", user.username))
+print(string.format("User's discriminator: %s", user.discriminator))
+```
+
+There are other examples in the `examples` folder
