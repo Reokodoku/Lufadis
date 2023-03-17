@@ -1,6 +1,8 @@
----Variables that determine the endpoint from which to take the information.
----Example:
----		http.request("GET", "https://discord.com/api/v10/" + string.format(USER, "_userId_", headers))
+--[=[
+    Variables that determine the endpoint from which to take the information.
+    Example:
+        http.request("GET", "https://discord.com/api/v10/" + string.format(USER, "_userId_", headers)
+]=]
 return {
 	CHANNEL             	= "/channels/%s",
 	CHANNEL_MESSAGE     	= "/channels/%s/messages/%s",

@@ -2,91 +2,60 @@ local http = require("coro-http")
 local json = require("json")
 local Snowflake = require("classes/Snowflake")
 local Message = require("classes/Message")
-local CDN = require("CDN")
+local getURLs = require("utils/getURLs")
 local WebhookAPI = require("Webhook/WebhookAPI")
-local WebhookTypes = require('enums/WebhookTypes')
 
-local api = WebhookAPI:new()
+local f = string.format
 
-local Webhook = {
-    type = nil,
-    id = nil,
-    name = nil,
-    token = nil,
-    avatar = nil,
-    channelId = nil,
-    createdAt = nil,
-    createdTimestamp = nil,
-    guildId = nil,
-    owner = nil,
-    sourceChannel = nil,
-    sourceGuild = nil,
-    url = nil,
-    applicationId = nil,
-    new =
-        function (self, webhookURL)
-            local request, data = http.request("GET", webhookURL, {{'User-Agent', "DiscordWebhook (https://discord.com/Reokodoku/Lufadis)"}, {'Content-Type', "application/json"},})
-            data = json.parse(data)
+local Webhook = {}
+Webhook.__index = Webhook
 
-            self.applicationId = data.applicationId
-            self.type = data.type
-            self.id = data.id
-            self.name = data.name
-            self.token = data.token
-            -- Avatar's hash
-            self.avatar = data.avatar
-            self.channelId = data.channel_id
-            self.createdAt = os.date('%Y-%m-%d %H:%M:%S', Snowflake.convertToTimestamp(self.id))
-            self.createdTimestamp = Snowflake.convertToTimestamp(self.id)
-            self.guildId = data.guild_id
-            self.owner = (data.owner == nil and nil or data.owner)
-            self.sourceChannel = (data.source_channel == nil and nil or data.source_channel)
-            self.sourceGuild = (data.source_guild == nil and nil or data.source_guild)
-            self.url = webhookURL
-            WebhookAPI:authenticate(self.token)
-            return self
-        end
-}
+local api = WebhookAPI.new()
 
-function Webhook:isApplicationCreated(options)
-    return self.type == WebhookTypes.Application
-end
+function Webhook.new(webhookURL)
+	local self = setmetatable({}, Webhook)
 
-function Webhook:isChannelFollower(options)
-    return self.type == WebhookTypes.ChannelFollower
-end
+    local request, data = http.request("GET", webhookURL, {{'User-Agent', "DiscordWebhook (https://discord.com/Reokodoku/Lufadis)"}, {'Content-Type', "application/json"},})
+	data = json.parse(data)
 
-function Webhook:isIncoming(options)
-    return self.type == WebhookTypes.Incoming
+    self._data = data or {}
+
+    self.type = self._data.type
+    self.id = self._data.id
+    self.name = self._data.name
+    self.token = self._data.token
+    -- Avatar's hash
+    self.avatar = self._data.avatar
+    self.channelId = self._data.channel_id
+    self.createdAt = os.date('%Y-%m-%d %H:%M:%S', Snowflake:convertToTimestamp(self.id))
+    self.createdTimestamp = Snowflake:convertToTimestamp(self.id)
+    self.guildId = self._data.guild_id
+    self.owner = (self._data.owner == nil and nil or self._data.owner)
+    self.sourceChannel = (self._data.source_channel == nil and nil or self._data.source_channel)
+    self.sourceGuild = (self._data.source_guild == nil and nil or self._data.source_guild)
+    self.url = webhookURL
+
+    WebhookAPI:authenticate(self.token)
+
+    return self
 end
 
 function Webhook:createdAtCustom(separator, centralSeparator)
     separator = separator or "-"
     centralSeparator = centralSeparator or ""
-    return os.date('%Y' .. separator .. '%m' .. separator .. '%d ' .. centralSeparator .. '%H:%M:%S', Snowflake.convertToTimestamp(self.id))
+    return os.date('%Y' .. separator .. '%m' .. separator .. '%d ' .. centralSeparator .. '%H:%M:%S', Snowflake:convertToTimestamp(self.id))
 end
 
 function Webhook:avatarURL(options)
-    return CDN.avatar(self.id, self.avatar, options)
+    return getURLs.avatar(self.id, self.avatar, options)
 end
 
 function Webhook:send(content)
-    if type(content) == "string" then
-        content = { content = content }
-    end
     return api:postWebhook(self.id, content)
 end
 
 function Webhook:fetchMessage(message_id)
     return Message.new(api:getWebhookMessage(self.id, message_id))
-end
-
-function Webhook:deleteMessage(message_id)
-    return Message.new(api:deleteMessage(self.id, message_id))
-end
-
-function Webhook:delete()
-    return Message.new(api:deleteWebhook(self.id))
 end
 
 return Webhook
