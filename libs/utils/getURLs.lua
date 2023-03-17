@@ -1,9 +1,12 @@
 local constants = require("constants")
 
 local CDN = {}
+CDN.__index = CDN
 
 function CDN.avatar(id, avatarHash, options)
-    if not avatarHash == nil then
+    if avatarHash == nil then
+        return nil
+    else
         options = options or { forceStatic = false, extension = "png" }
         local url = constants.CDN .. "/avatars/" .. id .. "/" .. avatarHash
         if options.forceStatic == false and string.sub(avatarHash, 1, string.len("_a")) == "_a" then
@@ -11,7 +14,6 @@ function CDN.avatar(id, avatarHash, options)
         end
         return url .. "." .. options.extension
     end
-    return nil
 end
 
 function CDN.defaultAvatar(discriminator)
@@ -19,7 +21,9 @@ function CDN.defaultAvatar(discriminator)
 end
 
 function CDN.banner(id, bannerHash, options)
-    if not bannerHash == nil then
+    if bannerHash == nil then
+        return nil
+    else
         options = options or { forceStatic = false, extension = "png" }
         local url = constants.CDN .. "/banners/" .. id .. "/" .. bannerHash
         if options.forceStatic == false and string.sub(bannerHash, 1, string.len("_a")) == "_a" then
@@ -27,27 +31,30 @@ function CDN.banner(id, bannerHash, options)
         end
         return url .. "." .. options.extension
     end
-    return nil
 end
 
 function CDN.splash(id, splashHash)
-    if not splashHash == nil then
+    if splashHash == nil then
+        return nil
+    else
         local url = constants.CDN .. "/splashes/" .. id .. "/" .. splashHash
         return url .. "." .. ".png"
     end
-    return nil
 end
 
 function CDN.discoverySplash(id, discoverySplashHash)
-    if not discoverySplashHash == nil then
+    if discoverySplashHash == nil then
+        return nil
+    else
         local url = constants.CDN .. "/discovery-splashes/" .. id .. "/" .. discoverySplashHash
         return url .. "." .. ".png"
     end
-    return nil
 end
 
 function CDN.icon(id, iconHash, options)
-    if not iconHash == nil then
+    if iconHash == nil then
+        return nil
+    else
         options = options or { forceStatic = false, extension = "png" }
         local url = constants.CDN .. "/icons/" .. id .. "/" .. iconHash
         if options.forceStatic == false and string.sub(iconHash, 1, string.len("_a")) == "_a" then
@@ -55,7 +62,6 @@ function CDN.icon(id, iconHash, options)
         end
         return url .. "." .. options.extension
     end
-    return nil
 end
 
 return CDN

@@ -1,37 +1,35 @@
-local http = require('coro-http')
-local json = require('json')
+local http = require("coro-http")
+local json = require("json")
 local timer = require('timer')
 local endpoints = require('endpoints')
 local constants = require('constants')
-local User = require('classes/User')
+local User = require("classes/User")
 
 local package = require('../package.lua')
 
-local API = {
-	apiVersion = 10,
-	userAgent = string.format('DiscordBot (%s, %s)', package.homepage, package.version),
-	token = nil,
-	new =
-		function (self, apiVersion)
-			if not apiVersion == nil then
-				apiVersion = apiVersion
-			end
-			constants.api = self
-			return self
-		end
-}
+local f = string.format
+
+local API = {}
+API.__index = API
+
+function API.new(apiVersion)
+	local self = setmetatable({}, API)
+	self._apiVersion = apiVersion or 10
+    self._userAgent = f('DiscordBot (%s, %s)', package.homepage, package.version)
+    return self
+end
 
 function API:authenticate(token)
-	self.token = token
+	self._token = token
 	return User.new(self:getCurrentUser())
 end
 
 function API:request(method, endpoint, body)
-    local url = string.format("%s/v%d%s", constants.API, self._apiVersion, endpoint)
+    local url = f("%s/v%d%s", constants.API, self._apiVersion, endpoint)
 
     local headers = {
-        {'User-Agent', self.userAgent},
-		{'Authorization', self.token},
+        {'User-Agent', self._userAgent},
+		{'Authorization', self._token},
         {'Content-Type', "application/json"},
     }
 
@@ -49,7 +47,7 @@ function API:request(method, endpoint, body)
 				break
 			end
 		end
-		print(string.format('Too many requests, retrying in %i ms', delay))
+		print(f('Too many requests, retrying in %i ms', delay))
 		timer.sleep(delay)
 		return self:request(method, endpoint, body)
 	elseif request.code == 204 then -- 204 = No Content (usually there is when the user has deleted a content)
@@ -60,47 +58,58 @@ function API:request(method, endpoint, body)
 end
 
 function API:postMeChannel(channel_id)
-	return self:request("POST", endpoints.ME_CHANNELS, json.encode({ recipient_id = channel_id }))
+	local endpoint = endpoints.ME_CHANNELS
+	return self:request("POST", endpoint, json.encode({recipient_id = channel_id}))
 end
 
 function API:postChannelMessage(channel_id, content)
-	return self:request("POST", string.format(endpoints.CHANNEL_MESSAGES, channel_id), json.encode({ content = content }))
+	local endpoint = f(endpoints.CHANNEL_MESSAGES, channel_id)
+	return self:request("POST", endpoint, json.encode({content = content}))
 end
 
 function API:getCurrentUser()
-	return self:request("GET", endpoints.ME)
+	local endpoint = endpoints.ME
+	return self:request("GET", endpoint)
 end
 
 function API:createDM(payload)
-	return self:request("POST", endpoints.ME_CHANNELS, payload)
+	local endpoint = endpoints.ME_CHANNELS
+	return self:request("POST", endpoint, payload)
 end
 
 function API:getUser(user_id)
-	return self:request("GET", string.format(endpoints.USER, user_id))
+	local endpoint = f(endpoints.USER, user_id)
+	return self:request("GET", endpoint)
 end
 
 function API:getChannel(channel_id)
-	return self:request("GET", string.format(endpoints.CHANNEL, channel_id))
+	local endpoint = f(endpoints.CHANNEL, channel_id)
+	return self:request("GET", endpoint)
 end
 
 function API:getGuilds()
-	return self:request("GET", endpoints.GUILDS)
+	local endpoint = endpoints.GUILDS
+	return self:request("GET", endpoint)
 end
 
 function API:getGuild(guild_id)
-	return self:request("GET", string.format(endpoints.GUILD, guild_id))
+	local endpoint = f(endpoints.GUILD, guild_id)
+	return self:request("GET", endpoint)
 end
 
 function API:getGuildsWebhook(guild_id)
-	return self:request("GET", string.format(endpoints.GUILD_WEBHOOKS, guild_id))
+	local endpoint = f(endpoints.GUILD_WEBHOOKS, guild_id)
+	return self:request("GET", endpoint)
 end
 
 function API:getGuildChannels(guild_id)
-	return self:request("GET", string.format(endpoints.GUILD_CHANNELS, guild_id))
+	local endpoint = f(endpoints.GUILD_CHANNELS, guild_id)
+	return self:request("GET", endpoint)
 end
 
 function API:deleteGuild(guild_id)
-	return self:request("DELETE", string.format(endpoints.GUILD, guild_id))
+	local endpoint = f(endpoints.GUILD, guild_id)
+	return self:request("DELETE", endpoint)
 end
 
 return API
