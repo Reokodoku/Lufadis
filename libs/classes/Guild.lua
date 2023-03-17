@@ -2,48 +2,59 @@ local Snowflake = require("classes/Snowflake")
 local getURLs = require("utils/getURLs")
 local otherUtil = require("utils/other")
 
-local f = string.format
-
-local Guild = {}
-Guild.__index = Guild
-
-function Guild.new(data)
-	local self = setmetatable({}, Guild)
-    self._data = data or {}
-
-    --print(self._data.message)
-
-    self.id = self._data.id
-    self.name = self._data.name
-    self.description = self._data.description
-    -- Guild icon's hash
-    self.icon = self._data.icon
-    -- Guild banner's hash
-    self.banner = self._data.banner
-    -- Splash guild invite image hash
-    self.splash = self._data.splash
-    -- Discovery splash image hash
-    self.discoverySplash = self._data.discovery_splash
-    self.createdAt = os.date('%Y-%m-%d %H:%M:%S', Snowflake:convertToTimestamp(self.id))
-    self.createdTimestamp = Snowflake:convertToTimestamp(self.id)
-    self.ownerId = self._data.owner_id
-    self.preferredLocale = self._data.preferred_locale
-    self.features = self._data.features
-    self.roles = self._data.roles
-    self.verified = otherUtil:isInArrayJSON(self.features["VERIFIED"])
-    self.partnered = otherUtil:isInArrayJSON(self.features["PARTNERED"])
-    self.afkChannelId = self._data.afk_channel_id
-    self.afkTimeout = self._data.afk_timeout
-    self.mfaLevel = self._data.mfa_level
-    self.nsfwLevel = self._data.nsfw_level
-
-    return self
-end
+local Guild = {
+    id = nil,
+    name = nil,
+    description = nil,
+    icon = nil,
+    banner = nil,
+    splash = nil,
+    discoverySplash = nil,
+    createdAt = nil,
+    createdTimestamp = nil,
+    ownerId = nil,
+    preferredLocale = nil,
+    features = nil,
+    roles = nil,
+    verified = nil,
+    partnered = nil,
+    afkChannelId = nil,
+    afkTimeout = nil,
+    mfaLevel = nil,
+    nsfwLevel = nil,
+    new =
+        function (self, data)
+            self.id = data.id
+            self.name = data.name
+            self.description = data.description
+            -- Guild icon's hash
+            self.icon = data.icon
+            -- Guild banner's hash
+            self.banner = data.banner
+            -- Splash guild invite image hash
+            self.splash = data.splash
+            -- Discovery splash image hash
+            self.discoverySplash = data.discovery_splash
+            self.createdAt = os.date('%Y-%m-%d %H:%M:%S', Snowflake.convertToTimestamp(self.id))
+            self.createdTimestamp = Snowflake.convertToTimestamp(self.id)
+            self.ownerId = data.owner_id
+            self.preferredLocale = data.preferred_locale
+            self.features = data.features
+            self.roles = data.roles
+            self.verified = otherUtil.isInArrayJSON(self.features["VERIFIED"])
+            self.partnered = otherUtil.isInArrayJSON(self.features["PARTNERED"])
+            self.afkChannelId = data.afk_channel_id
+            self.afkTimeout = data.afk_timeout
+            self.mfaLevel = data.mfa_level
+            self.nsfwLevel = data.nsfw_level
+            return self
+        end
+}
 
 function Guild:createdAtCustom(separator, centralSeparator)
     separator = separator or "-"
     centralSeparator = centralSeparator or ""
-    return os.date('%Y' .. separator .. '%m' .. separator .. '%d ' .. centralSeparator .. '%H:%M:%S', Snowflake:convertToTimestamp(self.id))
+    return os.date('%Y' .. separator .. '%m' .. separator .. '%d ' .. centralSeparator .. '%H:%M:%S', Snowflake.convertToTimestamp(self.id))
 end
 
 function Guild:iconURL(options)

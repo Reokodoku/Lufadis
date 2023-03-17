@@ -1,7 +1,7 @@
 return {
 	name = 'Reokodoku/lufadis',
 	version = '0.0.4',
-    	private = false,
+    private = false,
 	homepage = 'https://github.com/Reokodoku/Lufadis',
 	dependencies = {
 		'creationix/coro-http@3.1.0',
