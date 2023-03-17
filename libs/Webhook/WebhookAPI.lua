@@ -6,27 +6,28 @@ local constants = require('constants')
 
 local package = require('../../package.lua')
 
-local f = string.format
-
-local WebhookAPI = {}
-WebhookAPI.__index = WebhookAPI
-
-function WebhookAPI.new(apiVersion)
-	local self = setmetatable({}, WebhookAPI)
-	self._apiVersion = apiVersion or 10
-    self._userAgent = f('DiscordWebhook (%s, %s)', package.homepage, package.version)
-    return self
-end
+local WebhookAPI = {
+	apiVersion = 10,
+	userAgent = string.format('DiscordWebhook (%s, %s)', package.homepage, package.version),
+	token = nil,
+	new =
+		function (self, apiVersion)
+			if not apiVersion == nil then
+				apiVersion = apiVersion
+			end
+			return self
+		end
+}
 
 function WebhookAPI:authenticate(token)
-	self._token = token
+	self.token = token
 end
 
 function WebhookAPI:request(method, endpoint, body)
-    local url = f("%s/v%d%s", constants.API, self._apiVersion, endpoint)
+    local url = string.format("%s/v%d%s", constants.API, self.apiVersion, endpoint)
 
     local headers = {
-        {'User-Agent', self._userAgent},
+        {'User-Agent', self.userAgent},
         {'Content-Type', "application/json"},
     }
 
@@ -44,7 +45,7 @@ function WebhookAPI:request(method, endpoint, body)
 				break
 			end
 		end
-		print(f('Too many requests, retrying in %i ms', delay))
+		print(string.format('Too many requests, retrying in %i ms', delay))
 		timer.sleep(delay)
 		return self:request(method, endpoint, body)
 	elseif request.code == 204 then -- 204 = No Content (usually there is when the user has deleted a content)
@@ -55,18 +56,23 @@ function WebhookAPI:request(method, endpoint, body)
 end
 
 function WebhookAPI:getWebhook(webhook_id)
-	local endpoint = f(endpoints.WEBHOOK_TOKEN, webhook_id, self._token)
-	return self:request("GET", endpoint)
+	return self:request("GET", string.format(endpoints.WEBHOOK_TOKEN, webhook_id, self.token))
 end
 
 function WebhookAPI:getWebhookMessage(webhook_id, message_id)
-	local endpoint = f(endpoints.WEBHOOK_TOKEN_MESSAGE, webhook_id, self._token, message_id)
-	return self:request("GET", endpoint)
+	return self:request("GET", string.format(endpoints.WEBHOOK_TOKEN_MESSAGE, webhook_id, self.token, message_id))
+end
+
+function WebhookAPI:deleteWebhookMessage(webhook_id, message_id)
+	return self:request("DELETE", string.format(endpoints.WEBHOOK_TOKEN_MESSAGE, webhook_id, self.token, message_id))
 end
 
 function WebhookAPI:postWebhook(webhook_id, content)
-	local endpoint = f(endpoints.WEBHOOK_TOKEN, webhook_id, self._token)
-	return self:request("POST", endpoint, json.encode(content))
+	return self:request("POST", string.format(endpoints.WEBHOOK_TOKEN, webhook_id, self.token), json.encode(content))
+end
+
+function WebhookAPI:deleteWebhook(webhook_id)
+	return self:request("DELETE", string.format(endpoints.WEBHOOK_TOKEN, webhook_id, self.token))
 end
 
 return WebhookAPI

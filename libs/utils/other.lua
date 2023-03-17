@@ -1,16 +1,13 @@
 local Other = {}
-Other.__index = Other
 
-function Other:isInArrayJSON(value)
-    if value == nil then
-        return false
-    else
+function Other.isInArrayJSON(value)
+    if not value == nil then
         if value == true then
             return true
-        else
-            return false
         end
+        return false
     end
+    return false
 end
 
 return Other

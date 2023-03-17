@@ -1,57 +1,64 @@
 local Snowflake = require("classes/Snowflake")
 local DMChannel = require("classes/DMChannel")
-local getURLs = require("utils/getURLs")
+local CDN = require("CDN")
 
-local f = string.format
-
-local User = {}
-User.__index = User
-
-function User.new(data)
-	local self = setmetatable({}, User)
-    self._data = data or {}
-
-    local function hexAccentColor()
-        if self._data.accent_color == nil then
-            return nil
-        else
-            return f("#%x", self._data.accent_color)
+local User = {
+    id = nil,
+    username = nil,
+    discriminator = nil,
+    tag = nil,
+    avatar = nil,
+    banner = nil,
+    accentColor = nil,
+    hexAccentColor = nil,
+    createdAt = nil,
+    createdTimestamp = nil,
+    defaultAvatarURL = nil,
+    bot = nil,
+    flags = nil,
+    system = nil,
+    partial = nil,
+    new =
+        function (self, data)
+            local function hexAccentColor()
+                if not data.accent_color == nil then
+                    return string.format("#%x", data.accent_color)
+                end
+                return nil
+            end
+            self.id = data.id
+            self.username = data.username
+            self.discriminator = data.discriminator
+            self.tag = string.format("%s%s", self.username, self.discriminator)
+            -- User avatar's hash
+            self.avatar = data.avatar
+            -- User banner's hash
+            self.banner = data.banner
+            self.accentColor = data.accent_color
+            self.hexAccentColor = hexAccentColor()
+            self.createdAt = os.date('%Y-%m-%d %H:%M:%S', Snowflake.convertToTimestamp(self.id))
+            self.createdTimestamp = Snowflake.convertToTimestamp(self.id)
+            self.defaultAvatarURL = CDN.defaultAvatar(self.discriminator)
+            self.bot = (data.bot == true and true or false)
+            self.flags = data.public_flags
+            self.system = (data.system == true and true or false)
+            self.partial = not type(self.username) == "string"
+            return self
         end
-    end
-
-    self.id = self._data.id
-    self.username = self._data.username
-    self.discriminator = self._data.discriminator
-    self.tag = f("%s%s", self.username, self.discriminator)
-    -- User avatar's hash
-    self.avatar = self._data.avatar
-    -- User banner's hash
-    self.banner = self._data.banner
-    self.accentColor = self._data.accent_color
-    self.hexAccentColor = hexAccentColor()
-    self.createdAt = os.date('%Y-%m-%d %H:%M:%S', Snowflake:convertToTimestamp(self.id))
-    self.createdTimestamp = Snowflake:convertToTimestamp(self.id)
-    self.defaultAvatarURL = getURLs.defaultAvatar(self.discriminator)
-    self.bot = (self._data.bot == true and true or false)
-    self.flags = self._data.public_flags
-    self.system = (self._data.system == true and true or false)
-    self.partial = not type(self.username) == "string"
-
-    return self
-end
+}
 
 function User:createdAtCustom(separator, centralSeparator)
     separator = separator or "-"
     centralSeparator = centralSeparator or ""
-    return os.date('%Y' .. separator .. '%m' .. separator .. '%d ' .. centralSeparator .. '%H:%M:%S', Snowflake:convertToTimestamp(self.id))
+    return os.date('%Y' .. separator .. '%m' .. separator .. '%d ' .. centralSeparator .. '%H:%M:%S', Snowflake.convertToTimestamp(self.id))
 end
 
 function User:avatarURL(options)
-    return getURLs.avatar(self.id, self.avatar, options)
+    return CDN.avatar(self.id, self.avatar, options)
 end
 
 function User:bannerURL(options)
-    return getURLs.banner(self.id, self.banner, options)
+    return CDN.banner(self.id, self.banner, options)
 end
 
 function User:displayAvatarURL(options)
@@ -70,12 +77,12 @@ function User:equals(user)
     )
 end
 
-function User.send(api, id, content)
-    return DMChannel.send(api, id, content)
+function User.send(id, content)
+    return DMChannel.send(id, content)
 end
 
 function User:toString()
-    return f("<@%s>", self.id)
+    return string.format("<@%s>", self.id)
 end
 
 return User
