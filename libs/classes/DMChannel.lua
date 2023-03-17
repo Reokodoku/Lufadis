@@ -1,11 +1,10 @@
-local json = require("json")
+local constants = require("constants")
 
 local DMChannel = {}
-DMChannel.__index = DMChannel
 
-function DMChannel.send(api, id, content)
-    local dm = api:postMeChannel(id)
-    api:postChannelMessage(dm.id, content)
+function DMChannel.send(id, content)
+    local dm = constants.api:postMeChannel(id)
+    constants.api:postChannelMessage(dm.id, content)
 end
 
 return DMChannel
