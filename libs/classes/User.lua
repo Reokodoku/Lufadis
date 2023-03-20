@@ -17,35 +17,37 @@ local User = {
     bot = nil,
     flags = nil,
     system = nil,
-    partial = nil,
-    new =
-        function (self, data)
-            local function hexAccentColor()
-                if not data.accent_color == nil then
-                    return string.format("#%x", data.accent_color)
-                end
-                return nil
-            end
-            self.id = data.id
-            self.username = data.username
-            self.discriminator = data.discriminator
-            self.tag = string.format("%s%s", self.username, self.discriminator)
-            -- User avatar's hash
-            self.avatar = data.avatar
-            -- User banner's hash
-            self.banner = data.banner
-            self.accentColor = data.accent_color
-            self.hexAccentColor = hexAccentColor()
-            self.createdAt = os.date('%Y-%m-%d %H:%M:%S', Snowflake.convertToTimestamp(self.id))
-            self.createdTimestamp = Snowflake.convertToTimestamp(self.id)
-            self.defaultAvatarURL = CDN.defaultAvatar(self.discriminator)
-            self.bot = (data.bot == true and true or false)
-            self.flags = data.public_flags
-            self.system = (data.system == true and true or false)
-            self.partial = not type(self.username) == "string"
-            return self
-        end
+    partial = nil
 }
+User.__index = User
+
+function User.new(data)
+    local self = setmetatable({}, User)
+    local function hexAccentColor()
+        if not data.accent_color == nil then
+            return string.format("#%x", data.accent_color)
+        end
+        return nil
+    end
+    self.id = data.id
+    self.username = data.username
+    self.discriminator = data.discriminator
+    self.tag = string.format("%s%s", self.username, self.discriminator)
+    -- User avatar's hash
+    self.avatar = data.avatar
+    -- User banner's hash
+    self.banner = data.banner
+    self.accentColor = data.accent_color
+    self.hexAccentColor = hexAccentColor()
+    self.createdAt = os.date('%Y-%m-%d %H:%M:%S', Snowflake.convertToTimestamp(self.id))
+    self.createdTimestamp = Snowflake.convertToTimestamp(self.id)
+    self.defaultAvatarURL = CDN.defaultAvatar(self.discriminator)
+    self.bot = (data.bot == true and true or false)
+    self.flags = data.public_flags
+    self.system = (data.system == true and true or false)
+    self.partial = type(self.username) ~= "string"
+    return self
+end
 
 function User:createdAtCustom(separator, centralSeparator)
     separator = separator or "-"

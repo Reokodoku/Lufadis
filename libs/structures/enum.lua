@@ -1,9 +1,9 @@
-local enum = {
-    new =
-        function (self, table)
-            return table
-        end
-}
+local enum = {}
+enum.__index = enum
+
+function enum.new(table)
+    return table
+end
 
 function enum.find(table, value)
     for k, v in pairs(table) do

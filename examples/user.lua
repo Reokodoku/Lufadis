@@ -4,8 +4,8 @@ local API = lufadis.API:new()
 local token = "Bot <your-bot-token>" -- Token of Discord Bot
 API:authenticate(token)
 
-local user2 = lufadis.User:new(API:getUser("<user id>"))
-local user = lufadis.User:new(API:getUser("<user id>"))
+local user2 = lufadis.User.new(API:getUser("<user id>"))
+local user = lufadis.User.new(API:getUser("<user id>"))
 
 print("-- Properties --")
 
