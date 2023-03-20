@@ -1,7 +1,7 @@
 <div align="center">
   <br />
   <p>
-    <a href="https://github.com/Reokodoku/Lufadis"><img src="https://github.com/Reokodoku/Lufadis/blob/main/images/LufadisImage.png" width="600" alt="Lufadis" /></a>
+    <a href="https://github.com/Reokodoku/Lufadis"><img src="https://github.com/Reokodoku/Lufadis/raw/main/images/LufadisImage.png" width="600" alt="Lufadis" /></a>
   </p>
   <br />
   <p>

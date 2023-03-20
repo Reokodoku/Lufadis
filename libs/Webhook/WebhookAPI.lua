@@ -9,15 +9,17 @@ local package = require('../../package.lua')
 local WebhookAPI = {
 	apiVersion = 10,
 	userAgent = string.format('DiscordWebhook (%s, %s)', package.homepage, package.version),
-	token = nil,
-	new =
-		function (self, apiVersion)
-			if not apiVersion == nil then
-				apiVersion = apiVersion
-			end
-			return self
-		end
+	token = nil
 }
+WebhookAPI.__index = WebhookAPI
+
+function WebhookAPI.new(apiVersion)
+	local self = setmetatable({}, WebhookAPI)
+	if not apiVersion == nil then
+		apiVersion = apiVersion
+	end
+	return self
+end
 
 function WebhookAPI:authenticate(token)
 	self.token = token
@@ -33,7 +35,9 @@ function WebhookAPI:request(method, endpoint, body)
 
     local request, data = http.request(method, url, headers, body)
 
-	if request.code == 403 then -- 403 = Forbidden
+	if request.code == 400 then -- 400 = Bad request
+		return print('Bad request attempted. Error: ' .. data)
+	elseif request.code == 403 then -- 403 = Forbidden
 		return print('Forbidden request attempted. Check client permissions.\n' .. data .. '\n' .. debug.traceback())
 	elseif request.code == 401 then -- 401 = Unauthorized
 		return print('Unauthorized! Check your client token.\n' .. data .. '\n' .. debug.traceback())

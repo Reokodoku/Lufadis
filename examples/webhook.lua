@@ -1,6 +1,6 @@
 local lufadis = require("lufadis")
 
-local webhook = lufadis.Webhook:new("<your-webhook-url>")
+local webhook = lufadis.Webhook.new("<your-webhook-url>")
 
 print("-- Properties --")
 
@@ -24,4 +24,5 @@ print(string.format("Created at custom: %s", webhook:createdAtCustom("/")))
 print(string.format("Avatar URL: %s", webhook:avatarURL()))
 
 webhook:send({ content = "It works!" })
+webhook:send("It works with a normal string!")
 print(webhook:fetchMessage("<message-id>").createdAt)

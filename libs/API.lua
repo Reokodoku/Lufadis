@@ -13,10 +13,13 @@ local API = {
 	token = nil,
 	new =
 		function (self, apiVersion)
-			if not apiVersion == nil then
+			if apiVersion ~= nil then
 				apiVersion = apiVersion
 			end
-			constants.api = self
+			return self
+		end,
+	get =
+		function (self)
 			return self
 		end
 }
@@ -37,7 +40,9 @@ function API:request(method, endpoint, body)
 
     local request, data = http.request(method, url, headers, body)
 
-	if request.code == 403 then -- 403 = Forbidden
+	if request.code == 400 then -- 400 = Bad request
+		return print('Bad request attempted. Error: ' .. data)
+	elseif request.code == 403 then -- 403 = Forbidden
 		return print('Forbidden request attempted. Check client permissions.\n' .. data .. '\n' .. debug.traceback())
 	elseif request.code == 401 then -- 401 = Unauthorized
 		return print('Unauthorized! Check your client token.\n' .. data .. '\n' .. debug.traceback())
@@ -60,11 +65,11 @@ function API:request(method, endpoint, body)
 end
 
 function API:postMeChannel(channel_id)
-	return self:request("POST", endpoints.ME_CHANNELS, json.encode({ recipient_id = channel_id }))
+	return self:request("POST", endpoints.ME_CHANNELS, json.encode( { recipient_id = channel_id } ))
 end
 
 function API:postChannelMessage(channel_id, content)
-	return self:request("POST", string.format(endpoints.CHANNEL_MESSAGES, channel_id), json.encode({ content = content }))
+	return self:request("POST", string.format(endpoints.CHANNEL_MESSAGES, channel_id), json.encode( { content = content } ))
 end
 
 function API:getCurrentUser()

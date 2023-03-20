@@ -4,7 +4,7 @@ local API = lufadis.API:new()
 local token = "Bot <your-bot-token>" -- Token of Discord Bot
 API:authenticate(token)
 
-local guild = lufadis.Guild:new(API:getGuild("<your-guild-id>"))
+local guild = lufadis.Guild.new(API:getGuild("<your-guild-id>"))
 
 print("-- Properties --")
 
