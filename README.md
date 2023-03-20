@@ -34,13 +34,13 @@ API.authenticate("<your-token>")
 Now you can call the User class, Message class, Guild class, etc...
 ```lua
 -- Guild class
-local guild = lufadis.Guild:new(API:getGuild("<guild-id>"))
+local guild = lufadis.Guild.new(API:getGuild("<guild-id>"))
 print(string.format("Guild's ID: %s", guild.id))
 print(string.format("Guild's name: %s", guild.name))
 print(string.format("Guild's description: %s", guild.description))
 
 -- User class
-local user = lufadis.User:new(API:getUser("<user-id>"))
+local user = lufadis.User.new(API:getUser("<user-id>"))
 print(string.format("User's ID: %s", user.id))
 print(string.format("User's username: %s", user.username))
 print(string.format("User's discriminator: %s", user.discriminator))
